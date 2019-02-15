@@ -273,6 +273,7 @@ function mouseout(d) {
 
 // Function to reposition an array selection of labels (in the y-axis)
 function relax(labels, position) {
+<<<<<<< HEAD
     var again = false;
     labels.each(function (d, i) {
         var a = this;
@@ -284,12 +285,30 @@ function relax(labels, position) {
             var db = d3v4.select(b).datum();
             var y2 = db[position];
             var deltaY = y1 - y2;
+=======
+    again = false;
+    labels.each(function (d, i) {
+        a = this;
+        da = d3v4.select(a).datum();
+        y1 = da[position];
+        labels.each(function (d, j) {
+            b = this;
+            if (a == b) return;
+            db = d3v4.select(b).datum();
+            y2 = db[position];
+            deltaY = y1 - y2;
+>>>>>>> 8f5b1e757607c0f5c270a9149bb9ef610d9c18eb
 
             if (Math.abs(deltaY) > config.labelPositioning.spacing) return;
 
             again = true;
+<<<<<<< HEAD
             var sign = deltaY > 0 ? 1 : -1;
             var adjust = sign * config.labelPositioning.alpha;
+=======
+            sign = deltaY > 0 ? 1 : -1;
+            adjust = sign * config.labelPositioning.alpha;
+>>>>>>> 8f5b1e757607c0f5c270a9149bb9ef610d9c18eb
             da[position] = +y1 + adjust;
             db[position] = +y2 - adjust;
 
@@ -298,5 +317,8 @@ function relax(labels, position) {
             }
         })
     })
+<<<<<<< HEAD
 }
+=======
+>>>>>>> 8f5b1e757607c0f5c270a9149bb9ef610d9c18eb
 }
