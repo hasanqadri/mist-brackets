@@ -38,14 +38,25 @@
             <font color="white" font-family = "Impact, Charcoal, sans-serif">
                 <h3>Gerrymandering in America</h3></font>
         </ul>
-    </div>
+
     </div>
 
     <!-- Holds the left and right divs -->
     <div class = "container " style = "height: 100%; width: 100%; clear:both; ">
         <div class="w3-left-align innerContainer w3-card-4 w3-padding-right-custom" id="left">
             <h1 class="w3-margin-top  fontCustom w3-margin-bottom w3-center" id="head-title">Seats vs Popular Vote</h1>
-            <svg class="gerry" width="90%" height="5000px"></svg>
+            <div style="margin-left:45%; margin-bottom:50px">
+                Sort by:
+                <button onclick="sortByName()" class="w3-btn w3-green w3-ripple">Name</button>
+                <button onclick="sortByGerry()"  class="w3-btn w3-green w3-ripple">Gerrymandering</button>
+
+                <!--<select style="width:200px;" class = "w3-select w3-margin-left-custom w3-margin-top-custom1 text-center" id="raceDropdown">
+                    <option value='Alphabetical'>cat</option>
+                    <option value='dog'>dog</option>
+                    <option value='mouse'>mouse</option>
+                </select>  -->
+            </div>
+            <svg class="gerry" width="90%" height="10000px"></svg>
 
         </div>
     </div>
