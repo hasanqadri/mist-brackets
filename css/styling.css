@@ -40,3 +40,26 @@ circle {
     stroke: black;
     stroke-width: 2px;
 }
+
+div.tooltip {
+    position: absolute;
+    text-align: center;
+    width: 60px;
+    height: 28px;
+    padding: 2px;
+    font: 12px sans-serif;
+    background: lightsteelblue;
+    border: 0px;
+    border-radius: 8px;
+    pointer-events: none;
+}
+
+.vl {
+    border-left: 2px solid gray;
+    opacity: .5;
+    height: 3800px;
+    left: 27%;
+    position:absolute;
+    margin-left: -3px;
+    top: 21%;
+}
