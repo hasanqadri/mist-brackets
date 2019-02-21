@@ -14,8 +14,6 @@ var xMargin = 0;
 var yMargin = 30;
 var yMarginSpacing = 100;
 var hData = null;
-var demDistrictCount = 0;
-var repDistrictCount = 0;
 
 var circleState = null;
 
@@ -46,16 +44,6 @@ function gerry_graphs() {
         hData = results[1]
         var districts = createInitialDistrictHash(hData);
         createInitialGrid(data, districts);
-        //I want to have them all stacked up on top of each other.
-        //MEasure height of every single one of them with the Bbox.
-        //Now look at what parameter we are sorting them by:
-        // If sort by name descending, go through hashmap list of every group and translate them alphabetically descending.
-        //If sort by name ascending, go through hashmap list of every group and trnaslate them alphabetically asceniding
-        //If sort by most gerrymandered ''
-        //If sort by least gerrymandered
-
-        //With that order, translte them downwards according to bbox measurements
-        //Add tooltips to every circle
     }
 }
 
@@ -77,10 +65,8 @@ function createInitialDistrictHash(hData) {
             while (innerCounter < 435 && innerState == hData[innerCounter]['State']) {
                 if (hData[innerCounter]['Winner'] == 'Gop') {
                     districts[innerState]['Republicans'].push(hData[innerCounter]['District'])
-                    //console.log(innerState)
-                } else {
+                } else if (hData[innerCounter]['Winner'] == 'Dem') {
                     districts[innerState]['Democrats'].push(hData[innerCounter]['District'])
-                    //console.log(innerState)
                 }
                 innerCounter = innerCounter + 1
             }
@@ -88,10 +74,6 @@ function createInitialDistrictHash(hData) {
         }
     }
     return districts;
-
-    /**
-     * Return {'Florida': { [D1, D2, D3], [D4, D5, D6] }, 'Georgia': {[...],[...]}, ...}
-     */
 }
 
 
@@ -101,13 +83,11 @@ function createInitialGrid(data, districts) {
     //Set up circles and x and y values
     var cRadius = 5;
 
-    var demCirclesX = 40;
-    var gopCirclesX = 400;
-    var demCirclesY = 50;
-    var gopCirclesY = 50;
+    //Add district data to stte data
     for (var q = 0; q < data.length; q++) {
         data[q]['Districts'] = districts[data[q]['State']]
     }
+
     //X Scale
     var datas = [0,25, 50, 75, 100];
     var extent = d3v4.extent(datas);
@@ -124,13 +104,11 @@ function createInitialGrid(data, districts) {
     //Create state groups
     for (var x = 0; x < data.length; x++) {
 
-        demDistrictCount = 0;
-        repDistrictCount = 0;
-
         if (data[x]['State'].includes(' ')) {
             data[x]['State'] = data[x]['State'].split(' ')[0] + '_' + data[x]['State'].split(' ')[1]
         }
 
+        //Initial SVG container for each state
         var svgContainer = d3v4.select(".gerry").append('g').attr('class', data[x]['State']).attr("transform", "translate(" + (0) + ",0)");  //Transform xMargin pixels to the right, no y manipulation
 
         //Set up state text names
@@ -140,44 +118,33 @@ function createInitialGrid(data, districts) {
             .attr("dy", "1em")
             .attr('font-size', 20)
             .text(function() { return data[x]['State'].replace('_', ' ') });
+
         //Blue Dots
-        var count = 0;
+        //console.log(data[x]['Districts']['Democrats'])
+        svgContainer.selectAll('circle').data(data[x]['Districts']['Democrats']).enter().append('circle')
+            .style('fill', '#4575b4')
+            .attr('r', cRadius)
+            .attr('cx', function(d, i) {
+                return 30 + 15* parseInt(i%5)
+            })
+            .attr('cy', function (d, i) {
+                return 50 + 18 * parseInt(i/5)
+            })
+            .on("mouseover", function(d) {
+                div.transition()
+                    .duration(200)
+                    .style("opacity", .9)
+                div.html(d)
+                    .style("left", (d3v4.event.pageX + 5) + "px")
+                    .style("top", (d3v4.event.pageY - 28) + "px")
+            })
+            .on("mouseout", function(d) {
+                div.transition()
+                    .duration(100)
+                    .style("opacity", 0);
+            });
 
-        for (var z = 0; z < data[x]['Dem Wins']; z++) {
-            svgContainer.data(data[x]['Districts']['Democrats']).append('circle')
-                .style('fill', '#4575b4')
-                .attr('r', cRadius)
-                .attr('cx', function (d, i) {
-                    if (count == 5) {
-                        demCirclesX = 40;
-                    }
-                    return demCirclesX + (i * 80)
-                })
-                .attr('cy', function (d, i) {
-                    if (count == 5) {
-                        demCirclesY = demCirclesY + 14;
-                        count = 0;
-                    }
-                    count++;
-                    return demCirclesY + (i * 80)
-                })
-                .on("mouseover", function(d) {
-                    div.transition()
-                        .duration(200)
-                        .style("opacity", .9)
-                    console.log(d)
-                    div.html(d)
-                        .style("left", (d3v4.event.pageX + 5) + "px")
-                        .style("top", (d3v4.event.pageY - 28) + "px")
-                })
-                .on("mouseout", function(d) {
-                    div.transition()
-                        .duration(100)
-                        .style("opacity", 0);
-                });
 
-            demCirclesX = demCirclesX + 14;
-        }
 
         //d3v4.event.pageX + 5   d3v4.event.pageY - 28
         //x_axis
@@ -196,51 +163,33 @@ function createInitialGrid(data, districts) {
             .attr("transform", "translate(" + (calculatedPercentage) + "," + -120 + ")").call(axis);
 
         //Red Dots
-        count = 0;
+        console.log(data[x]['Districts']['Republicans'])
+        svgContainer.append('g').selectAll('circle').data(data[x]['Districts']['Republicans']).enter().append('circle')
+            .style('fill', 'red')
+            .attr('r', cRadius)
+            .attr('cx', function (d, i) {
+                //console.log(d)
+                return 400 + 15 * (parseInt(i%5))
+            })
+            .attr('cy', function (d, i) {
+                return 50 + 18 * (parseInt(i/5))
+            })
+            .on("mouseover", function(d) {
+                div.transition()
+                    .duration(200)
+                    .style("opacity", .9);
+                div.html(d)
+                    .style("left", (d3v4.event.pageX + 5) + "px")
+                    .style("top", (d3v4.event.pageY - 28) + "px");
+            })
+            .on("mouseout", function(d) {
+                div.transition()
+                    .duration(100)
+                    .style("opacity", 0);
+            });
 
-        for (z = 0; z < data[x]['Gop Wins']; z++) {
-            svgContainer.append('circle')
-                .style('fill', 'red')
-                .attr('r', cRadius)
-                .attr('cx', function (d, i) {
-                    if (count == 5) {
-                        gopCirclesX = 400;
-                        gopCirclesY = gopCirclesY + 14;
-                        count = 0;
-                    }
-                    return gopCirclesX + (i * 80)
-                })
-                .attr('cy', function (d, i) {
-                    count++;
-                    return gopCirclesY + (i * 80)
-                })
-                .on("mouseover", function(d) {
-                    div.transition()
-                        .duration(200)
-                        .style("opacity", .9);
-                    div.html(data[x]['Districts']['Republicans'][z])
-                        .style("left", (d3v4.event.pageX + 5) + "px")
-                        .style("top", (d3v4.event.pageY - 28) + "px");
-                })
-                .on("mouseout", function(d) {
-                    div.transition()
-                        .duration(100)
-                        .style("opacity", 0);
-                });
-
-            gopCirclesX = gopCirclesX + 14;
-
-        }
         nameArray.push(data[x]['State'])
         gerryArray.push(Math.abs(parseFloat(data[x]['Gop % of Votes']) - parseFloat(data[x]['Gop % of Seats'])))
-        //demCirclesY = demCirclesY + xMargin;
-        //gopCirclesY = gopCirclesY + yMarginSpacing;
-        demCirclesX = 40;
-        gopCirclesX = 400;
-        demCirclesY = 50;
-        gopCirclesY = 50;
-        repDistrictCount = 0;
-        demDistrictCount = 0;
     }
     var gerryArraySort = gerryArray;
     var highest = -1;
@@ -266,19 +215,8 @@ function initTransformation() {
         d3v4.select('.' + nameArray[z]).attr("transform", "translate(" + 0 + "," + totalHeight+ ")");
         totalHeight = d3v4.select('.' + nameArray[z])['_groups'][0][0].getBBox().height + totalHeight + yMargin
     }
-    //console.log('here')
     return;
 }
-
-/**
-function getData(nanme) {
-    for (var b = 0; b < data.length; b++) {
-        if (name == data[b]['State']) {
-            return data[b];
-        }
-    }
-}
-**/
 
 function sortByName() {
     var totalHeight = 0;
@@ -299,11 +237,11 @@ function sortByName() {
 }
 
 function sortByGerry() {
-    console.log(gerryArray)
+    //console.log(gerryArray)
     var totalHeight = 0;
     if (gerryBit) {
         for (var z = 0; z < nameArray.length; z++) {
-            console.log(gerryList[z])
+            //console.log(gerryList[z])
             d3v4.select('.' + nameArray[gerryList[z]]).transition().duration(250).attr("transform", "translate(" + xMargin + "," + totalHeight+ ")")
             totalHeight = totalHeight + yMarginSpacing;
         }
@@ -316,12 +254,12 @@ function sortByGerry() {
     gerryBit = !gerryBit;
 }
 
-//To Do
+//TODO   Need to implement sort by party column
 function sortByParty() {
     var totalHeight = 0;
     if (partyBit) {
         for (var z = 0; z < nameArray.length; z++) {
-            console.log(gerryList[z])
+            //console.log(gerryList[z])
             d3v4.select('.' + nameArray[gerryList[z]]).transition().duration(250).attr("transform", "translate(" + xMargin + "," + totalHeight+ ")")
             totalHeight = totalHeight + yMarginSpacing;
         }
@@ -333,20 +271,3 @@ function sortByParty() {
     }
     gerryBit = !gerryBit;
 }
-
-
-/**
- .on("mouseover", function(d) {
-                    div.transition()
-                        .duration(200)
-                        .style("opacity", .9);
-                    div.html('    ')
-                        .style("left", (d3v4.event.pageX + 5) + "px")
-                        .style("top", (d3v4.event.pageY - 28) + "px");
-                })
- .on("mouseout", function(d) {
-                    div.transition()
-                        .duration(100)
-                        .style("opacity", 0);
-                });
-**/
