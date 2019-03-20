@@ -1,6 +1,18 @@
+var selection = 0;
+
+$("#team3").hide();
+$("#team4").hide();
 function myFunction() {
     /* Get the text field */
-    var copyText = $('#team1').val() + ' vs ' + $('#team2').val() + " in "  + $('#location').val() + " " + $('#room').val();
+    var copyText = ""
+    console.log(selection)
+    if (selection == 2) {
+        copyText = $('#team1').val() + ' vs ' + $('#team2').val() + " in "  + $('#location').val() + " " + $('#room').val();
+    } else if (selection == 3) {
+        copyText = $('#team1').val() + ' vs ' + $('#team2').val() + ' vs ' + $('#team3').val() + " " + " in "  + $('#location').val() + " " + $('#room').val();
+    } else if (selection == 4) {
+        copyText = $('#team1').val() + ' vs ' + $('#team2').val() + ' vs ' + $('#team3').val()  + ' vs ' + $('#team4').val() + " " + " in "  + $('#location').val() + " " + $('#room').val();
+    }
     if ( $('#score1').val() !== "" &&  $('#score2').val() !== "") {
         copyText = copyText + " - " + " Final Score: " + $('#score1').val() + "-" + $('#score2').val()
     }
@@ -32,9 +44,30 @@ function myFunction() {
     textArea.value = ""
     $('#team1').val("");
     $('#team2').val("");
+    $('#team3').val("");
+    $('#team4').val("");
     $('#location').val("");
     $('#room').val("");
     $('#score1').val("");
     $('#score2').val("");
 
 }
+
+$('.selection').on('change', function() {
+    if ($(".selection option:selected").text() == "Two Teams") {
+        console.log('here2')
+        $("#team3").hide();
+        $("#team4").hide();
+        selection = 2;
+    } else if ($(".selection option:selected").text() == "Three Teams") {
+        $("#team4").hide();
+        $("#team3").show();
+        selection = 3;
+        console.log('here3')
+    } else if ($(".selection option:selected").text() == "Four Teams") {
+        console.log('here4')
+        $("#team4").show();
+        $("#team3").show();
+        selection = 4;
+    }
+});
