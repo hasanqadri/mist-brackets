@@ -58,16 +58,22 @@ $('.selection').on('change', function() {
         console.log('here2')
         $("#team3").hide();
         $("#team4").hide();
+        $('#score1').show();
+        $('#score2').show();
         selection = 2;
     } else if ($(".selection option:selected").text() == "Three Teams") {
         $("#team4").hide();
         $("#team3").show();
+        $('#score1').hide();
+        $('#score2').hide();
         selection = 3;
         console.log('here3')
     } else if ($(".selection option:selected").text() == "Four Teams") {
         console.log('here4')
         $("#team4").show();
         $("#team3").show();
+        $('#score1').hide();
+        $('#score2').hide();
         selection = 4;
     }
 });
