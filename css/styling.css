@@ -44,8 +44,8 @@ circle {
 div.tooltip {
     position: absolute;
     text-align: center;
-    width: 60px;
-    height: 28px;
+    width: 80px;
+    height: 60px;
     padding: 2px;
     font: 12px sans-serif;
     background: lightsteelblue;
@@ -54,12 +54,12 @@ div.tooltip {
     pointer-events: none;
 }
 
-.vl {
+div.v2 {
     border-left: 2px solid gray;
     opacity: .5;
-    height: 3800px;
-    left: 27%;
+    height: 2000px;
+    left: 18%;
     position:absolute;
     margin-left: -3px;
-    top: 21%;
+    top: 26%;
 }
