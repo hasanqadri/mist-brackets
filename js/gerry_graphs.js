@@ -14,7 +14,7 @@ function myFunction() {
         copyText = $('#team1').val() + ' vs ' + $('#team2').val() + ' vs ' + $('#team3').val()  + ' vs ' + $('#team4').val() + " " + " in "  + $('#location').val() + " " + $('#room').val();
     }
     if ( $('#score1').val() !== "" &&  $('#score2').val() !== "") {
-        copyText = copyText + " - " + " Final Score: " + $('#score1').val() + "-" + $('#score2').val()
+        copyText = copyText + " - " + "Final Score: " + $('#score1').val() + "-" + $('#score2').val()
     }
     var textArea = document.createElement("textarea");
     textArea.style.position = 'fixed';
