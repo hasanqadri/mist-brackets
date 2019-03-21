@@ -1,4 +1,4 @@
-var selection = 0;
+var selection = 2;
 
 $("#team3").hide();
 $("#team4").hide();
